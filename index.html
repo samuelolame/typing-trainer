@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Entraînement de frappe clavier QWERTY</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+text-align: center;
+padding: 30px;
+background-color: #f4f4f4;
+}
+h1 {
+color: #333;
+}
+#texte-a-taper {
+font-size: 1.2em;
+margin: 20px auto;
+max-width: 600px;
+background: #fff;
+padding: 15px;
+border-radius: 8px;
+border: 1px solid #ccc;
+}
+#zone-saisie {
+width: 80%;
+height: 100px;
+font-size: 1.1em;
+padding: 10px;
+margin-top: 15px;
+border: 2px solid #666;
+border-radius: 8px;
+resize: none;
+}
+button {
+margin-top: 15px;
+padding: 10px 20px;
+font-size: 1em;
+cursor: pointer;
+background-color: #007bff;
+color: white;
+border: none;
+border-radius: 6px;
+}
+#resultats {
+margin-top: 30px;
+font-size: 1.1em;
+}
+#resultats p {
+margin: 8px 0;
+}
+</style>
+</head>
+<body>
+<h1>Apprends à taper plus vite (QWERTY)</h1>
+<p id="texte-a-taper">The quick brown fox jumps over the lazy dog.</p>
+<textarea id="zone-saisie" placeholder="Tape ici..." disabled></textarea>
+<br>
+<button id="demarrer-btn">Démarrer</button>
+<div id="resultats">
+<p><strong>⏱ Temps :</strong> <span id="temps">0</span> secondes</p>
+<p><strong>❌ Erreurs :</strong> <span id="erreurs">0</span></p>
+<p><strong>⚡ Vitesse :</strong> <span id="vitesse">0</span> mots par minute</p>
+</div>
+<script>
+const texteATaper = document.getElementById("texte-a-taper").innerText;
+const zoneSaisie = document.getElementById("zone-saisie");
+const demarrerBtn = document.getElementById("demarrer-btn");
+const tempsSpan = document.getElementById("temps");
+const erreursSpan = document.getElementById("erreurs");
+const vitesseSpan = document.getElementById("vitesse");
+let debutTemps;
+let timer;
+let erreurs = 0;
+demarrerBtn.addEventListener("click", () => {
+zoneSaisie.value = "";
+zoneSaisie.disabled = false;
+zoneSaisie.focus();
+erreurs = 0;
+debutTemps = Date.now();
+tempsSpan.textContent = "0";
+erreursSpan.textContent = "0";
+vitesseSpan.textContent = "0";
+clearInterval(timer);
+timer = setInterval(() => {
+const tempsEcoule = Math.floor((Date.now() - debutTemps) / 1000);
+tempsSpan.textContent = tempsEcoule;
+}, 1000);
+});
+zoneSaisie.addEventListener("input", () => {
+const saisie = zoneSaisie.value;
+erreurs = 0;
+for (let i = 0; i < saisie.length; i++) {
+if (saisie[i] !== texteATaper[i]) {
+erreurs++;
+}
+}
+erreursSpan.textContent = erreurs;
+if (saisie === texteATaper) {
+clearInterval(timer);
+const tempsFinal = (Date.now() - debutTemps) / 1000;
+const nbMots = texteATaper.trim().split(/\s+/).length;
+const mpm = Math.round((nbMots / (tempsFinal / 60)));
+vitesseSpan.textContent = mpm;
+zoneSaisie.disabled = true;
+}
+});
+</script>
+</body>
+</html>
